@@ -12,7 +12,7 @@ const CoinList = () => {
     }, []);
 
     return (
-        <div>
+        <div className='coin-list'>
             <h2>Top Cryptocurrencies</h2>
             <ul>
                 {coins.map(coin => (
