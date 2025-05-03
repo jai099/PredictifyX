@@ -4,14 +4,27 @@ import styles from './CoinList.module.css';
 
 const CoinList = () => {
     const [coins, setCoins] = useState([]);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         fetch('http://localhost:5000/api/coins')
+            .then((res) => res.json())
+            .then((data) => {
+                const coinsArray = Array.isArray(data) ? data : data.coins;
+                if (!Array.isArray(coinsArray)) {
+                    throw new Error("Data is not an array");
+                }
+                setCoins(coinsArray);
+            })
+            .catch((err) => {
+                console.error("Error fetching data:", err);
+            });
 
-            .then(response => response.json())
-            .then(data => setCoins(data))
-            .catch(error => console.error('Error fetching data:', error));
     }, []);
+
+    if (error) {
+        return <div className={styles.coinList}>{error}</div>;
+    }
 
     return (
         <div className={styles.coinList}>
