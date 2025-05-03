@@ -14,24 +14,27 @@ const CoinDetails = () => {
             .then((res) => res.json())
             .then((data) => {
                 setCoin(data);
-                generatePrediction(); // 👈 optional: generate a prediction after fetching
+                fetchPrediction(); // 👈 optional: generate a prediction after fetching
             })
             .catch((err) => {
                 console.error("Error:", err);
             });
     }, [id]); // ✅ 'id' as the dependency
 
-    const generatePrediction = () => {
-        const outcomes = [
-            '📈 Strong uptrend expected',
-            '📉 Possible dip ahead',
-            '💹 Sideways movement likely',
-            '🚀 Breakout coming soon',
-            '🔻 Short-term correction expected'
-        ];
-        const randomPrediction = outcomes[Math.floor(Math.random() * outcomes.length)];
-        setPrediction(randomPrediction);
+    // Example call from frontend
+    const fetchPrediction = async (promptText) => {
+        const res = await fetch('http://localhost:5000/api/predict', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ prompt: promptText }),
+        });
+
+        const data = await res.json();
+        console.log('AI Prediction:', data.prediction);
     };
+
 
     if (!coin || !coin.symbol || !coin.image || !coin.market_data) {
         return <div className={styles.coinDetails}>Loading...</div>;
