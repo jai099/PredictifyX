@@ -1,0 +1,57 @@
+.coinList {
+    padding: 40px 20px;
+    background: linear-gradient(to bottom right, #0f0f0f, #1a1a1a);
+    min-height: 100vh;
+    text-align: center;
+    color: #fff;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.heading {
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+    color: #00ffe1;
+    text-shadow: 0 0 5px #00ffe1, 0 0 10px #00ffe1;
+}
+
+.coinGrid {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.coinCard {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid #00ffe1;
+    border-radius: 16px;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 20px rgba(0, 255, 225, 0.2);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.coinCard:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px rgba(0, 255, 225, 0.5);
+}
+
+.coinName {
+    font-weight: bold;
+    font-size: 1.3rem;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.coinSymbol {
+    color: #ccc;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.coinPrice {
+    font-size: 1.2rem;
+    color: #00ff95;
+    font-weight: 600;
+}

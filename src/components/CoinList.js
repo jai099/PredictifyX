@@ -1,23 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import './CoinList.css';
+import { Link } from 'react-router-dom';
+import styles from './CoinList.module.css';
 
 const CoinList = () => {
     const [coins, setCoins] = useState([]);
 
     useEffect(() => {
-        fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1&sparkline=false')
+        fetch('http://localhost:5000/api/coins')
+
             .then(response => response.json())
             .then(data => setCoins(data))
             .catch(error => console.error('Error fetching data:', error));
     }, []);
 
     return (
-        <div className='coin-list'>
-            <h2>Top Cryptocurrencies</h2>
-            <ul>
+        <div className={styles.coinList}>
+            <h2 className={styles.heading}>🔍 Top Cryptocurrencies</h2>
+            <ul className={styles.coinGrid}>
                 {coins.map(coin => (
                     <li key={coin.id}>
-                        {coin.name} ({coin.symbol.toUpperCase()}): ${coin.current_price}
+                        <Link to={`/coin/${coin.id}`} style={{ textDecoration: 'none' }}>
+                            <div className={styles.coinCard}>
+                                <div className={styles.coinName}>{coin.name}</div>
+                                <div className={styles.coinSymbol}>({coin.symbol.toUpperCase()})</div>
+                                <div className={styles.coinPrice}>${coin.current_price}</div>
+                            </div>
+                        </Link>
                     </li>
                 ))}
             </ul>
