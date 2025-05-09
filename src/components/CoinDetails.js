@@ -3,42 +3,51 @@ import { useParams, Link } from 'react-router-dom';
 import styles from './CoinDetails.module.css';
 
 const CoinDetails = () => {
-    const { id } = useParams(); // ✅ This gives you the coin ID from URL
+    const { id } = useParams();
     const [coin, setCoin] = useState(null);
     const [prediction, setPrediction] = useState('');
 
     useEffect(() => {
-        if (!id) return; // ✅ Use 'id' instead of 'coinId'
+        if (!id) return;
 
-        fetch(`http://localhost:5000/api/coin/${id}`) // ✅ Same here
+        fetch(`http://localhost:5000/api/coin/${id}`)
             .then((res) => res.json())
             .then((data) => {
                 setCoin(data);
-                fetchPrediction(); // 👈 optional: generate a prediction after fetching
+                fetchPrediction(data); // ✅ pass fetched coin directly
             })
             .catch((err) => {
-                console.error("Error:", err);
+                console.error("Error fetching coin:", err);
             });
-    }, [id]); // ✅ 'id' as the dependency
+    }, [id]);
 
-    // Example call from frontend
-    const fetchPrediction = async (promptText) => {
-        const res = await fetch('http://localhost:5000/api/predict', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ prompt: promptText }),
-        });
+    const fetchPrediction = async (coinData) => {
+        try {
+            if (!coinData || !coinData.name || !coinData.symbol) {
+                throw new Error('Invalid coin data');
+            }
 
-        const data = await res.json();
-        console.log('AI Prediction:', data.prediction);
+            const predictionRes = await fetch('http://localhost:5000/api/predict', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: coinData.name,
+                    symbol: coinData.symbol
+                })
+            });
+
+            const predictionData = await predictionRes.json();
+            setPrediction(predictionData.prediction);
+        } catch (error) {
+            console.error('Prediction error:', error);
+            setPrediction('Prediction unavailable at the moment.');
+        }
     };
-
 
     if (!coin || !coin.symbol || !coin.image || !coin.market_data) {
         return <div className={styles.coinDetails}>Loading...</div>;
     }
+
     return (
         <div className={styles.coinDetails}>
             <h2>{coin.name} ({coin.symbol.toUpperCase()})</h2>
