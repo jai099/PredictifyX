@@ -13,6 +13,11 @@ const CoinDetails = () => {
         fetch(`http://localhost:5000/api/coin/${id}`)
             .then((res) => res.json())
             .then((data) => {
+                if (data.error) {
+                    console.error('Backend coin error:', data.error);
+                    setPrediction('Error fetching coin details.');
+                    return;
+                }
                 setCoin(data);
                 fetchPrediction(data); // ✅ pass fetched coin directly
             })
@@ -24,7 +29,9 @@ const CoinDetails = () => {
     const fetchPrediction = async (coinData) => {
         try {
             if (!coinData || !coinData.name || !coinData.symbol) {
-                throw new Error('Invalid coin data');
+                console.warn('Skipping prediction due to incomplete coin data:', coinData);
+                setPrediction('Prediction unavailable (missing coin data).');
+                return;
             }
 
             const predictionRes = await fetch('http://localhost:5000/api/predict', {
